@@ -1,0 +1,44 @@
+﻿<Window x:Class="Installer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Installer"
+        mc:Ignorable="d"
+        Title="Rubot updater" Height="290.8" Width="562" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" FontSize="14" Icon="Resources/download.ico" SizeToContent="Height" ShowInTaskbar="False">
+    <Grid>
+        <Label Content="Version" HorizontalAlignment="Left" Margin="10,65,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+        <TextBlock x:Name="VersionText" TextWrapping="Wrap" Text="1.2.3.4" VerticalAlignment="Top" Margin="129,70,9,0"/>
+        <Label Content="Description" HorizontalAlignment="Left" Margin="10,96,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+        <TextBlock x:Name="DescriptionText" Margin="129,101,10,62" TextWrapping="Wrap"><Run Text="Anno"/><Run Text="tation"/></TextBlock>
+        <ProgressBar x:Name="Progress" Margin="10,0,117,13" VerticalAlignment="Bottom" Value="50" VerticalContentAlignment="Bottom" Height="10"/>
+        <Button x:Name="ButtonUpdate" Content="Update" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="96" Height="34" IsDefault="True" Click="ButtonUpdateClick" FontWeight="Bold" Style="{DynamicResource GelButton}">
+            <Button.Effect>
+                <DropShadowEffect BlurRadius="2" ShadowDepth="2"/>
+            </Button.Effect>
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFA1EAF5" Offset="0"/>
+                    <GradientStop Color="#FF80ACA0" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <Button x:Name="ButtonRun" Content="Run!" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="96" Height="34" IsDefault="True" FontWeight="Bold" Click="ButtonRun_Click" ScrollViewer.VerticalScrollBarVisibility="Disabled" Foreground="White" Visibility="Hidden" Style="{DynamicResource GelButton}">
+            <Button.Effect>
+                <DropShadowEffect BlurRadius="2" ShadowDepth="2"/>
+            </Button.Effect>
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFDC5A5A" Offset="0"/>
+                    <GradientStop Color="#FFEE7346" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <TextBlock x:Name="ProgressText" TextWrapping="Wrap" VerticalAlignment="Bottom" Margin="10,0,117,28"/>
+        <Grid HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="555" Background="#FFB0BEC5">
+            <Image HorizontalAlignment="Left" Height="32" Margin="16,16,0,0" VerticalAlignment="Top" Width="32" Source="Resources/download.ico" Stretch="None" RenderTransformOrigin="0.5,0.5"/>
+            <Label Content="Rubot updater" HorizontalAlignment="Left" Margin="53,13,0,0" VerticalAlignment="Top" FontSize="20"/>
+        </Grid>
+        
+    </Grid>
+</Window>
