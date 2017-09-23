@@ -5,7 +5,7 @@
 
     class WindowsDefenderHelper
     {
-        private bool IsWindowsSevenOrLess => Environment.OSVersion.Version < Version.Parse("6.2");
+        private bool IsWindowsSevenOrLess => Environment.OSVersion.Version < new Version(6, 2);
 
         private void SetProtection(bool disable)
         {
@@ -28,7 +28,8 @@
                 return;
             }
             var fileName = Path.GetTempPath() + "disableDefender.ps1";
-            File.WriteAllText(fileName, $@"New-ItemProperty -Path ""HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender"" -Name DisableAntiSpyware -Value {(disable ? "1" : "0")} -PropertyType DWORD -Force {Environment.NewLine}"
+            File.WriteAllText(fileName, $@"New-ItemProperty -Path ""HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender"""
+                + $"-Name DisableAntiSpyware -Value {(disable ? "1" : "0")} -PropertyType DWORD -Force {Environment.NewLine}"
                 + $"Set-MpPreference -DisableRealtimeMonitoring ${disable}");
             ProcessHelper.ExecHiddenRunAs("powershell.exe", $"-ExecutionPolicy UnRestricted -File {fileName}");
             File.Delete(fileName);

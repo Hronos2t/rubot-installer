@@ -123,7 +123,7 @@
 
         public void Dispose()
         {
-            client.Dispose();
+            client?.Dispose();
         }
     }
 }

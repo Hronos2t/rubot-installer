@@ -21,14 +21,9 @@
             ProgressText.Text = "";
             service = new MainService();
 
-            if (lastver > currentVerions)
-            {
-                ButtonRun.Visibility = Visibility.Hidden;
-            }
-            else
-            {
-                ButtonRun.Visibility = Visibility.Visible;
-            }
+            ButtonRun.Visibility = lastver > currentVerions 
+                ? Visibility.Hidden 
+                : Visibility.Visible;
         }
 
         private async void ButtonUpdateClick(object sender, RoutedEventArgs e)
@@ -58,7 +53,6 @@
             {
                 ProgressText.Text = error;
                 ButtonUpdate.IsEnabled = true;
-                return;
             }
             else
             {

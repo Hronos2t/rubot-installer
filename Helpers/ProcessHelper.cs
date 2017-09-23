@@ -34,7 +34,7 @@
                 process.WaitForExit(10000);
             }
             process.Close();
-            process.Dispose();
+            process?.Dispose();
         }
     }
 }
