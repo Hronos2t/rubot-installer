@@ -7,6 +7,8 @@
 
     public partial class MainWindow : Window
     {
+        private MainService service;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -17,6 +19,7 @@
             Progress.Visibility = Visibility.Hidden;
             Progress.Value = 0;
             ProgressText.Text = "";
+            service = new MainService();
 
             if (lastver > currentVerions)
             {
@@ -31,62 +34,36 @@
         private async void ButtonUpdateClick(object sender, RoutedEventArgs e)
         {
             ButtonUpdate.IsEnabled = false;
-            var unpacker = new Unpacker();
-            string fileLocation;
-            using (var fileDownloader = new FileHelper()
-            {
-                DownloadInTempDir = true
-            })
-            {
-                fileDownloader.CountdownCompleted += new AsyncCompletedEventHandler(Completed);
-                fileDownloader.DownloadProgressChanged += new DownloadProgressChangedEventHandler(DownloadProgress);
-                Progress.Visibility = Visibility.Visible;
-                
-                var InstalledSevenZipPath = unpacker.GetInstalled7Zip();
-                // install 7zip
-                if (string.IsNullOrEmpty(InstalledSevenZipPath))
-                {
-                    try
-                    {
-                        await fileDownloader.DownloadAsync(Urls.SevenZip, "7z.exe");
-                    }
-                    catch
-                    {
-                        ProgressText.Text = "Error downloading 7zip. Please check you internet connection.";
-                        return;
-                    }
-                    unpacker.SilentInstall7Zip(fileDownloader.fileLocation, true);
-                }
 
-                ProgressText.Text = "Prepare system.";
-                var defender = new WindowsDefenderHelper();
-                defender.DisableRealTimeProtection();
-                defender.DisableDefenderWin7();
+            service.CountdownCompleted += new AsyncCompletedEventHandler(Completed);
+            service.DownloadProgressChanged += new DownloadProgressChangedEventHandler(DownloadProgress);
+            Progress.Visibility = Visibility.Visible;
 
-                try
-                {
-                    await fileDownloader.DownloadAsync(Urls.Rubot);
-                }
-                catch
-                {
-                    ProgressText.Text = "Error downloading. Please check you internet connection.";
-                    return;
-                }
-                fileLocation = fileDownloader.fileLocation;
+            // install 7zip, if need
+            var error = await service.InstallSevenZip();
+            if (!string.IsNullOrEmpty(error))
+            {
+                ProgressText.Text = error;
+                return;
             }
 
-            ProgressText.Text = "Extracting...";
+            ProgressText.Text = "Prepare system.";
+            var defender = new WindowsDefenderHelper();
+            defender.DisableRealTimeProtection();
+            defender.DisableDefenderWin7();
 
-            var extractedLocation = unpacker.Extract(fileLocation, FileHelper.GetStartingPath, false);
-            if (extractedLocation)
+            ProgressText.Text = "Extracting...";
+            error = await service.DownloadAndExtractRubot();
+            if (!string.IsNullOrEmpty(error))
             {
-                ProgressText.Text = "Updating successful!";
-                ButtonRun.Visibility = Visibility.Visible;
+                ProgressText.Text = error;
+                ButtonUpdate.IsEnabled = true;
+                return;
             }
             else
             {
-                ProgressText.Text = "7z.exe not found! You need unpack archive manually.";
-                ButtonUpdate.IsEnabled = true;
+                ProgressText.Text = "Updating successful!";
+                ButtonRun.Visibility = Visibility.Visible;
             }
         }
 
@@ -113,7 +90,7 @@
             var installedBot = FileHelper.GetInstalledBotExe;
             if (installedBot != null)
             {
-                ProcessHelper.Exec(FileHelper.GetInstalledBotExe);
+                ProcessHelper.Exec(installedBot);
             }
             Environment.Exit(0);
         }

@@ -1,6 +1,7 @@
 ﻿namespace Installer
 {
     using System.Diagnostics;
+    using System.IO;
 
     static class ProcessHelper
     {
@@ -22,6 +23,7 @@
                 {
                     WindowStyle = windowStyle,
                     FileName = fileName,
+                    WorkingDirectory = Path.GetDirectoryName(fileName),
                     Arguments = args,
                     Verb = runAs ? "runas" : ""
                 }

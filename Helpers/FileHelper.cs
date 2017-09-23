@@ -15,6 +15,10 @@
 
         private string defaultArhiveName = "arhive.7z";
 
+        private static string defaultExeName = "firefox.exe";
+
+        private static string defaultSubDir = "RuBot";
+
         public volatile string fileLocation;
 
         public event AsyncCompletedEventHandler CountdownCompleted;
@@ -23,34 +27,47 @@
 
         public static string GetStartingPath => Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]);
 
+        public static string GetTargetPath
+        {
+            get
+            {
+                var installed = GetInstalledBotExe;
+                return string.IsNullOrEmpty(installed)
+                    ? Path.Combine(GetStartingPath, defaultSubDir)
+                    : Path.GetDirectoryName(installed);
+            }
+        }
+
         public static string GetInstalledBotExe
         {
             get
             {
-                var apps = Directory.GetFiles(GetStartingPath, "*.exe", SearchOption.TopDirectoryOnly)
+                var startingPath = GetStartingPath;
+                var apps = Directory.GetFiles(startingPath, "*.exe", SearchOption.TopDirectoryOnly)
                         .Where(a => a != Environment.GetCommandLineArgs()[0]).Select(a => Path.GetFileName(a));
-
-                if (!apps.Any())
-                    return null;
 
                 // check from args
                 var args = Environment.GetCommandLineArgs();
                 var exeFromArg = args.Length > 3 ? args[3] : null;
-                if (!string.IsNullOrEmpty(exeFromArg))
+                if (!string.IsNullOrEmpty(exeFromArg) && apps.Any())
                 {
-                    return $@"{GetStartingPath}\{apps.FirstOrDefault(a => a == exeFromArg)}";
+                    return Path.Combine(startingPath, apps.First(a => a == exeFromArg));
                 }
 
-                // only one
-                if (apps.Count() == 1)
+                // check default SubDir
+                var subDirPath = Path.Combine(startingPath, defaultSubDir);
+                if (exeFromArg == null && Directory.Exists(subDirPath))
                 {
-                    return $@"{GetStartingPath}\{apps.Single()}";
+                    var appsSubDir = Directory.GetFiles(subDirPath, "*.exe", SearchOption.TopDirectoryOnly);
+                    // only one
+                    if (appsSubDir.Count() == 1)
+                        return appsSubDir.First();
                 }
 
                 // check default
-                var defaultApp = apps.FirstOrDefault(a => a == "firefox.exe");
+                var defaultApp = apps.FirstOrDefault(a => a == defaultExeName);
                 if (!string.IsNullOrEmpty(defaultApp)) {
-                    return $@"{GetStartingPath}\{defaultApp}";
+                    return Path.Combine(startingPath, defaultApp);
                 }
 
                 return null;
