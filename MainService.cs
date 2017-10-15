@@ -81,7 +81,8 @@
             }
             var extracted = unpacker.Extract(fileDownloader.fileLocation, FileHelper.GetTargetPath, false);
 
-            return extracted ? null : "7z.exe not found! You need unpack archive manually.";
+            return extracted ? null : $"7z.exe not found! You need manually unpack archive \"{fileDownloader.fileLocation}\" to \"{FileHelper.GetTargetPath}\". " +
+                $"Or use link https://github.com/Hronos2t/rubot-binary/archive/master.zip";
         }
     }
 }
