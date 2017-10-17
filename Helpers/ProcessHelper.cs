@@ -1,21 +1,22 @@
 ﻿namespace Installer
 {
+    using System;
     using System.Diagnostics;
     using System.IO;
 
     static class ProcessHelper
     {
-        public static void ExecHidden(string fileName, string args = "")
+        public static bool ExecHidden(string fileName, string args = "")
         {
-            Exec(fileName, ProcessWindowStyle.Hidden, args, true, false);
+            return Exec(fileName, ProcessWindowStyle.Hidden, args, true, false);
         }
 
-        public static void ExecHiddenRunAs(string fileName, string args = "")
+        public static bool ExecHiddenRunAs(string fileName, string args = "")
         {
-            Exec(fileName, ProcessWindowStyle.Hidden, args, true, true);
+            return Exec(fileName, ProcessWindowStyle.Hidden, args, true, true);
         }
 
-        public static void Exec(string fileName, ProcessWindowStyle windowStyle = ProcessWindowStyle.Normal, string args = "", bool waitForExit = false, bool runAs = false)
+        public static bool Exec(string fileName, ProcessWindowStyle windowStyle = ProcessWindowStyle.Normal, string args = "", bool waitForExit = false, bool runAs = false)
         {
             var process = new Process()
             {
@@ -28,13 +29,21 @@
                     Verb = runAs ? "runas" : ""
                 }
             };
-            process.Start();
-            if (waitForExit)
+            try
             {
-                process.WaitForExit(10000);
+                process.Start();
+                if (waitForExit)
+                {
+                    process.WaitForExit(10000);
+                }
+                process.Close();
+                process?.Dispose();
+                return true;
             }
-            process.Close();
-            process?.Dispose();
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

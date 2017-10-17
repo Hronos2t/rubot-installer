@@ -2,6 +2,7 @@
 {
     using System;
     using System.ComponentModel;
+    using System.IO;
     using System.Net;
     using System.Threading.Tasks;
 
@@ -48,28 +49,29 @@
             }
         }
 
-        public async Task<string> InstallSevenZip()
+        public async Task<ErrorMessage> InstallSevenZip()
         {
             var InstalledSevenZipPath = unpacker.GetInstalled7Zip();
-            // install 7zip
-            if (string.IsNullOrEmpty(InstalledSevenZipPath))
-            {
+
+            // if allready installed
+            if (!string.IsNullOrEmpty(InstalledSevenZipPath))
                 return null;
-            }
+
+            // install 7zip
             try
             {
                 await fileDownloader.DownloadAsync(Urls.SevenZip, "7z.exe");
             }
             catch
             {
-                return "Error downloading 7zip. Please check you internet connection.";
+                return new ErrorMessage("Error downloading 7zip.", "Please check you internet connection.");
             }
 
             unpacker.SilentInstall7Zip(fileDownloader.fileLocation, true);
             return null;
         }
 
-        internal async Task<string> DownloadAndExtractRubot()
+        internal async Task<ErrorMessage> DownloadAndExtractRubot()
         {
             try
             {
@@ -77,12 +79,15 @@
             }
             catch
             {
-                return "Error downloading. Please check you internet connection.";
+                return new ErrorMessage("Error downloading.", "Please check you internet connection.");
             }
             var extracted = unpacker.Extract(fileDownloader.fileLocation, FileHelper.GetTargetPath, false);
 
-            return extracted ? null : $"7z.exe not found! You need manually unpack archive \"{fileDownloader.fileLocation}\" to \"{FileHelper.GetTargetPath}\". " +
-                $"Or use link https://github.com/Hronos2t/rubot-binary/archive/master.zip";
+            return extracted
+                ? null
+                : new ErrorMessage("$7z.exe not found!",
+                    $"You need manually unpack archive {fileDownloader.fileLocation} to {FileHelper.GetTargetPath}.{Environment.NewLine}" +
+                    $"Or use link {Path.Combine(Urls.RubotGithub, "archive/master.zip")}");
         }
     }
 }

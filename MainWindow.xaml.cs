@@ -36,9 +36,9 @@
 
             // install 7zip, if need
             var error = await service.InstallSevenZip();
-            if (!string.IsNullOrEmpty(error))
+            if (error != null)
             {
-                ProgressText.Text = error;
+                ShowErrorMessage(error);
                 return;
             }
 
@@ -49,9 +49,9 @@
 
             ProgressText.Text = "Extracting...";
             error = await service.DownloadAndExtractRubot();
-            if (!string.IsNullOrEmpty(error))
+            if (error != null)
             {
-                ProgressText.Text = error;
+                ShowErrorMessage(error);
                 ButtonUpdate.IsEnabled = true;
             }
             else
@@ -59,6 +59,12 @@
                 ProgressText.Text = "Updating successful!";
                 ButtonRun.Visibility = Visibility.Visible;
             }
+        }
+
+        private void ShowErrorMessage(ErrorMessage error)
+        {
+            ProgressText.Text = error.Title;
+            DescriptionText.Text = error.Message;
         }
 
         private void Completed(object sender, AsyncCompletedEventArgs e)

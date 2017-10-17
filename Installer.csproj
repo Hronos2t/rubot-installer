@@ -61,6 +61,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ErrorMessage.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Helpers\ProcessHelper.cs" />
     <Compile Include="MainService.cs" />
