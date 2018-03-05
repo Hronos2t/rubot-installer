@@ -15,7 +15,7 @@
 
         private string defaultArhiveName = "arhive.7z";
 
-        private static string defaultExeName = "firefox.exe";
+        private static string defaultExeName => Environment.Is64BitOperatingSystem ? "firefox64.exe" : "firefox.exe";
 
         private static string defaultSubDir = "RuBot";
 
@@ -59,6 +59,13 @@
                 if (exeFromArg == null && Directory.Exists(subDirPath))
                 {
                     var appsSubDir = Directory.GetFiles(subDirPath, "*.exe", SearchOption.TopDirectoryOnly);
+                    // x86 and x64
+                    if (appsSubDir.Count() == 2)
+                    {
+                        var x64App = appsSubDir.FirstOrDefault(f => f.Contains("64.exe"));
+                        if (x64App != null)
+                            return Environment.Is64BitOperatingSystem ? x64App : appsSubDir.FirstOrDefault(f => f != x64App);
+                    }
                     // only one
                     if (appsSubDir.Count() == 1)
                         return appsSubDir.First();
