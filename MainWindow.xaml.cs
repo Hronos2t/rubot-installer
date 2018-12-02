@@ -90,7 +90,7 @@
             var installedBot = FileHelper.GetInstalledBotExe;
             if (installedBot != null)
             {
-                ProcessHelper.Exec(installedBot);
+				FileHelper.Run(installedBot);
             }
             Environment.Exit(0);
         }

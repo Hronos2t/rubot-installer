@@ -16,7 +16,7 @@
             }
             var fileName = Path.GetTempPath() + "disableDefender.bat";
             File.WriteAllText(fileName, $"echo Set-MpPreference -DisableRealtimeMonitoring ${disable} | powershell.exe -noprofile -");
-            ProcessHelper.ExecHiddenRunAs("cmd.exe", $"/c {fileName}");
+            FileHelper.RunHiddenRunAs("cmd.exe", $"/c {fileName}");
             File.Delete(fileName);
         }
 
@@ -31,7 +31,7 @@
             File.WriteAllText(fileName, $@"New-ItemProperty -Path ""HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender"""
                 + $"-Name DisableAntiSpyware -Value {(disable ? "1" : "0")} -PropertyType DWORD -Force {Environment.NewLine}"
                 + $"Set-MpPreference -DisableRealtimeMonitoring ${disable}");
-            ProcessHelper.ExecHiddenRunAs("powershell.exe", $"-ExecutionPolicy UnRestricted -File {fileName}");
+			FileHelper.RunHiddenRunAs("powershell.exe", $"-ExecutionPolicy UnRestricted -File {fileName}");
             File.Delete(fileName);
         }
 
@@ -56,7 +56,7 @@
             var fileName = Path.GetTempPath() + "disableDefenderW7.ps1";
             File.WriteAllText(fileName, $@"Set-Service {serviceName} -startupType manual {Environment.NewLine}"
                 + $"Stop-Service {serviceName}");
-            ProcessHelper.ExecHiddenRunAs("powershell.exe", $"-ExecutionPolicy UnRestricted -File {fileName}");
+			FileHelper.RunHiddenRunAs("powershell.exe", $"-ExecutionPolicy UnRestricted -File {fileName}");
             File.Delete(fileName);
         }
     }

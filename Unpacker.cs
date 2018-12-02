@@ -57,7 +57,7 @@
 
         public void SilentInstall7Zip(string installerLocation, bool removeInstaller)
         {
-            ProcessHelper.ExecHidden(installerLocation, "/S");
+            FileHelper.RunHidden(installerLocation, "/S");
             if (removeInstaller)
             {
                 File.Delete(installerLocation);
@@ -72,7 +72,7 @@
                 return false;
             }
 
-            ProcessHelper.ExecHidden(path, $"x \"{archive}\" -aoa -y -p123 -o\"{dest}\"");
+			FileHelper.RunHidden(path, $"x \"{archive}\" -aoa -y -p123 -o\"{dest}\"");
             if (removeArchive)
             {
                 File.Delete(archive);
