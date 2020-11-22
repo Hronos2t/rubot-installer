@@ -63,7 +63,6 @@
     </ApplicationDefinition>
     <Compile Include="ErrorMessage.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
-    <Compile Include="Helpers\ProcessHelper.cs" />
     <Compile Include="MainService.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
